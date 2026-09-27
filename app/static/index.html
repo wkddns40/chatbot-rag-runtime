@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chatbot · RAG Runtime</title><link rel="stylesheet" href="/static/style.css"><script defer src="/static/app.js"></script></head>
+<body>
+<aside><a class="brand" href="/">W <span>CHATBOT / RAG<small>PUBLIC REFERENCE RUNTIME</small></span></a>
+<p>운영 구조를 독립 구현한 로컬 공개판</p>
+<form id="login"><label for="token">로컬 접근 토큰</label><input id="token" type="password" autocomplete="off" required placeholder=".env의 ADMIN_TOKEN / READER_TOKEN"><button>연결</button></form>
+<p id="identity" role="status">연결 전</p><button id="new-chat" disabled>+ 새 대화</button><nav id="conversations" aria-label="대화 이력"></nav>
+<details id="ingestion" hidden><summary>RAG 문서 관리 · 관리자</summary>
+<form id="upload"><label for="document">색인용 문서</label><input id="document" type="file" accept=".txt,.md,.pdf" required><label for="acl">접근 범위</label><select id="acl"><option value="public">모든 로컬 사용자</option><option value="admin">관리자 전용</option></select><button>반입 대기 등록</button></form><div id="documents"></div></details>
+<small>사내 시스템과 연결되지 않습니다.<br>공개 자료 또는 합성 샘플만 사용하세요.</small></aside>
+<main><header><span>ATTACHMENT · RETRIEVAL · STREAMING</span><h1>문서에서 근거 있는 답변으로</h1><p id="mode-status">GPU 없이 시작하거나, 자신의 SGLang 모델을 연결하세요.</p></header>
+<div id="notice" role="status" aria-live="polite"></div><section id="messages" aria-label="대화 내용" aria-live="polite"></section>
+<form id="chat"><label for="mode">분석 경로</label><select id="mode"><option value="rag">RAG · 승인된 기준 문서</option><option value="attachment">첨부 · 현재 대화 전용</option><option value="chat">일반 대화</option></select><label for="attachment">대화 첨부 (선택)</label><input id="attachment" type="file" accept=".txt,.md,.pdf"><label for="question">질문</label><textarea id="question" rows="3" maxlength="4000" required placeholder="샘플 프로젝트의 문서 승인 절차는?"></textarea><button id="send" disabled>질문 보내기 ↗</button></form>
+<div class="feedback"><button data-rating="1">도움 됨</button><button data-rating="-1">개선 필요</button></div>
+</main></body></html>

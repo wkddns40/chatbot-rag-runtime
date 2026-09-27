@@ -1,0 +1,43 @@
+name: chatbot-rag-runtime
+services:
+  app:
+    build: .
+    ports: ["127.0.0.1:8080:8080"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://runtime:${POSTGRES_PASSWORD:?Run python setup.py}@postgres:5432/runtime
+      QDRANT_URL: http://qdrant:6333
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    restart: on-failure
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 15
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: runtime
+      POSTGRES_DB: runtime
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python setup.py}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U runtime -d runtime]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  qdrant:
+    image: qdrant/qdrant:v1.14.1
+    volumes: [qdrant-data:/qdrant/storage]
+volumes:
+  postgres-data:
+  qdrant-data:
